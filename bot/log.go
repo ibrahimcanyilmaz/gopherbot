@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 	"time"
-
+	"go.uber.org/zap"
 	"github.com/lnxjedi/robot"
 )
 
@@ -24,6 +24,11 @@ var terminalWriter io.Writer
 
 var errorThreshold = robot.Warn
 
+var (
+	logger, _ = zap.NewProduction()
+	sugar = logger.Sugar()
+)
+
 // Log logs messages whenever the connector log level is
 // less than the given level
 func Log(l robot.LogLevel, m string, v ...interface{}) bool {
@@ -37,15 +42,15 @@ func Log(l robot.LogLevel, m string, v ...interface{}) bool {
 		msg = fmt.Sprintf(msg, v...)
 	}
 	if logger == nil && l >= currlevel {
-		botStdOutLogger.Print(msg)
+		sugar.Info(msg)
 		return true
 	}
 	if nullConn && l >= errorThreshold {
-		botStdOutLogger.Print(msg)
+		sugar.Info(msg)
 	}
 	if l >= currlevel || l == robot.Audit {
 		if l == robot.Fatal {
-			logger.Fatal(msg)
+			sugar.Fatal(msg)
 		} else {
 			if localTerm && l >= errorThreshold {
 				if terminalWriter != nil {
@@ -54,7 +59,7 @@ func Log(l robot.LogLevel, m string, v ...interface{}) bool {
 					botStdOutLogger.Print(msg)
 				}
 			}
-			logger.Print(msg)
+			sugar.Info(msg)
 			tsMsg := fmt.Sprintf("%s %s\n", time.Now().Format("Jan 2 15:04:05"), msg)
 			botLogger.Lock()
 			botLogger.buffer[botLogger.buffLine] = tsMsg

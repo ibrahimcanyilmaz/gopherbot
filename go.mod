@@ -21,5 +21,8 @@ require (
 	github.com/robfig/cron v1.2.0
 	github.com/slack-go/slack v0.6.2
 	github.com/stretchr/testify v1.5.1
+	go.uber.org/multierr v1.6.0 // indirect
+	go.uber.org/zap v1.16.0
 	golang.org/x/sys v0.0.0-20200302150141-5c8b2ff67527
+	golang.org/x/tools v0.0.0-20200522201501-cb1345f3a375 // indirect
 )
